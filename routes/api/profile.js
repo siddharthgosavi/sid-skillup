@@ -169,4 +169,170 @@ router.delete('/', auth, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+//@route    PUT api/profile/experience
+//@desc     Add Profile experience
+//@access   Private
+router.put(
+  '/experience',
+  [
+    auth,
+    [check('title', 'Title is rquired').notEmpty()],
+    [check('company', 'Company is rquired').notEmpty()],
+    [check('from', 'fromDate is rquired').notEmpty()],
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { title, company, location, from, to, current, description } =
+      req.body;
+
+    const newExp = {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description,
+    };
+
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+      profile.experience.unshift(newExp);
+
+      await profile.save();
+
+      res.json(profile);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
+
+//@route    PUT api/profile/experience
+//@desc     Add Profile experience
+//@access   Private
+router.put(
+  '/experience',
+  [
+    auth,
+    [check('title', 'Title is rquired').notEmpty()],
+    [check('company', 'Company is rquired').notEmpty()],
+    [check('from', 'fromDate is rquired').notEmpty()],
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { title, company, location, from, to, current, description } =
+      req.body;
+
+    const newExp = {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description,
+    };
+
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+
+      profile.experience.unshift(newExp);
+
+      await profile.save();
+
+      res.json(profile);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
+
+//@route    Update api/profile/experience/update/:exp_id
+//@desc     Update Profile experience
+//@access   Private
+router.put(
+  '/experience/update/:exp_id',
+  [
+    auth,
+    [check('title', 'Title is rquired').notEmpty()],
+    [check('company', 'Company is rquired').notEmpty()],
+    [check('from', 'fromDate is rquired').notEmpty()],
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { title, company, location, from, to, current, description } =
+      req.body;
+
+    const newExp = {
+      title,
+      company,
+      location,
+      from,
+      to,
+      current,
+      description,
+    };
+
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+
+      //Get update index
+      const updateIndex = profile.experience
+        .map((item) => item.id)
+        .indexOf(req.params.exp_id);
+      if (updateIndex == -1) {
+        return res.status(400).json({ msg: 'Experience not found' });
+      } else {
+        profile.experience.splice(updateIndex, 1, newExp);
+      }
+
+      await profile.save();
+
+      res.json(profile);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error');
+    }
+  }
+);
+
+//@route    DELETE api/profile/experience
+//@desc     DELETE Profile experience
+//@access   Private
+router.delete('/experience/:exp_id', auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    //Get remove index
+    const removeIndex = profile.experience
+      .map((item) => item.id)
+      .indexOf(req.params.exp_id);
+
+    profile.experience.splice(removeIndex, 1);
+
+    await profile.save();
+
+    res.json(profile);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;

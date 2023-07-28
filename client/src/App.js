@@ -22,6 +22,7 @@ import Profiles from './componants/profiles/Profiles';
 import Profile from './profile/Profile';
 import Posts from './componants/posts/Posts';
 import Post from './componants/post/Post';
+import NotFound from './componants/layout/NotFound';
 
 if (localStorage.token) {
   setAuthToken(localStorage.token);
@@ -38,6 +39,7 @@ function App() {
         <Fragment>
           <Navbar />
           <Routes>
+            <Route Component={NotFound} />
             <Route
               exact
               path="/"
@@ -123,6 +125,7 @@ function App() {
                   </PrivateRoute>
                 }
               />
+              <Route Component={NotFound} />
             </Routes>
           </section>
         </Fragment>
